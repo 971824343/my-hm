@@ -21,7 +21,7 @@
       ref="password"
     ></my-input>
 
-    <my-btn @login="login">登陆</my-btn>
+    <my-btn @click="login">登陆</my-btn>
 
     <div class="no-user">
       没有账号点击<router-link to="/register">注册</router-link>
@@ -69,13 +69,18 @@ export default {
         }
       })
     }
+  },
+  created() {
+    console.log(this.$route.params)
+    this.username = this.$route.params.username
+    this.password = this.$route.params.password
   }
 }
 </script>
 
 <style lang="less" scoped>
 .no-user {
-  padding-top: 10px;
+  padding-top: 20px;
   padding-right: 20px;
   text-align: right;
   font-size: 16px;

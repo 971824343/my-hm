@@ -8,7 +8,7 @@
 export default {
   methods: {
     login() {
-      this.$emit('login')
+      this.$emit('click')
     }
   }
 }

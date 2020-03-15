@@ -10,8 +10,9 @@ import User from '../views/User'
 const router = new VueRouter({
   routes: [
     { path: '/', component: Login },
-    { path: '/register', component: Register },
-    { path: '/user', component: User }
+    { path: '/login', component: Login, name: 'login' },
+    { path: '/register', component: Register, name: 'register' },
+    { path: '/user', component: User, name: 'user' }
   ]
 })
 
