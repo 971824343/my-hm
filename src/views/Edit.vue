@@ -84,6 +84,11 @@ export default {
     },
     // 修改昵称
     editNickname() {
+      if (!/^[\u4e00-\u9fa5]{2,5}$/.test(this.nickname)) {
+        this.$toast.fail('用户名为2-5位中文')
+        return
+      }
+
       this.editUser({ nickname: this.nickname })
     },
     // 显示密码
@@ -93,6 +98,10 @@ export default {
     },
     // 修改密码
     editPassword() {
+      if (!/^\d{3,12}$/.test(this.password)) {
+        this.$toast.fail('密码必须为3-12位数字')
+        return
+      }
       this.editUser({ password: this.password })
     },
     // 显示性别
