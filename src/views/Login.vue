@@ -24,7 +24,8 @@
     <my-btn @click="login">登陆</my-btn>
 
     <div class="no-user">
-      没有账号点击<router-link to="/register">注册</router-link>
+      没有账号点击
+      <router-link to="/register">注册</router-link>
     </div>
   </div>
 </template>
@@ -61,17 +62,20 @@ export default {
         }
       }).then(res => {
         console.log(res.data)
-        if (res.data.statusCode == 200) {
-          this.$toast.success(res.data.message)
+        let { statusCode, data, message } = res.data
+        if (statusCode == 200) {
+          this.$toast.success(message)
+          localStorage.setItem('token', data.token)
+          localStorage.setItem('user-id', data.user.id)
           this.$router.push('/user')
         } else {
-          this.$toast.fail(res.data.message)
+          this.$toast.fail(message)
         }
       })
     }
   },
   created() {
-    console.log(this.$route.params)
+    // console.log(this.$route.params)
     this.username = this.$route.params.username
     this.password = this.$route.params.password
   }
