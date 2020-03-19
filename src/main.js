@@ -31,7 +31,8 @@ import {
   Radio,
   Cell,
   CellGroup,
-  Uploader
+  Uploader,
+  Button
 } from 'vant'
 Vue.use(Toast)
 Vue.use(Dialog)
@@ -42,6 +43,7 @@ Vue.use(Radio)
 Vue.use(Cell)
 Vue.use(CellGroup)
 Vue.use(Uploader)
+Vue.use(Button)
 
 // 注册 data 全局 过滤器 === ==
 import moment from 'moment'
