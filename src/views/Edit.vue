@@ -9,8 +9,7 @@
         :autoCropHeight="150"
         :fixed="true"
         ref="cropper"
-      >
-      </vue-cropper>
+      ></vue-cropper>
       <van-button class="crop" type="primary" @click="crop">裁剪</van-button>
       <van-button class="cancel" type="info" @click="cancel">取消</van-button>
     </div>
@@ -20,48 +19,21 @@
       <van-uploader class="uploader" :after-read="afterRead" />
     </div>
 
-    <my-navbar
-      title="昵称"
-      :content="info.nickname"
-      @click="shownickname"
-    ></my-navbar>
-    <my-navbar
-      title="密码"
-      :content="info.password.replace(/./g, '*')"
-      @click="showPassword"
-    ></my-navbar>
-    <my-navbar
-      title="性别"
-      :content="info.gender == '1' ? '男' : '女'"
-      @click="showGender"
-    ></my-navbar>
+    <my-navbar title="昵称" :content="info.nickname" @click="shownickname"></my-navbar>
+    <my-navbar title="密码" :content="info.password.replace(/./g, '*')" @click="showPassword"></my-navbar>
+    <my-navbar title="性别" :content="info.gender == '1' ? '男' : '女'" @click="showGender"></my-navbar>
 
     <!-- 组件调用 -->
-    <van-dialog
-      v-model="show"
-      title="修改昵称"
-      @confirm="editNickname"
-      show-cancel-button
-    >
+    <van-dialog v-model="show" title="修改昵称" @confirm="editNickname" show-cancel-button>
       <van-field v-model="nickname" placeholder="请输入用户名" />
     </van-dialog>
 
     <!-- 密码框 -->
-    <van-dialog
-      v-model="show1"
-      title="修改昵称"
-      @confirm="editPassword"
-      show-cancel-button
-    >
+    <van-dialog v-model="show1" title="修改昵称" @confirm="editPassword" show-cancel-button>
       <van-field v-model="password" placeholder="请输入密码" />
     </van-dialog>
     <!-- 单选框 -->
-    <van-dialog
-      v-model="show2"
-      title="修改昵称"
-      @confirm="editGender"
-      show-cancel-button
-    >
+    <van-dialog v-model="show2" title="修改昵称" @confirm="editGender" show-cancel-button>
       <van-radio-group v-model="gender">
         <van-cell-group>
           <van-cell title="男" clickable @click="gender = 1">
@@ -85,40 +57,34 @@ export default {
   },
   methods: {
     // 渲染页面
-    getInfo() {
+    async getInfo() {
       const user_id = localStorage.getItem('user-id')
       // const token = localStorage.getItem('token')
-      this.$axios({
+      const res = await this.$axios({
         url: `/user/${user_id}`,
         method: 'get'
-        // headers: {
-        //   Authorization: token
-        // }
-      }).then(res => {
-        let { statusCode, data } = res.data
-        if (statusCode == 200) {
-          this.info = data
-        }
       })
+
+      let { statusCode, data } = res.data
+      if (statusCode == 200) {
+        this.info = data
+      }
     },
     // 修改用户方法
-    editUser(data) {
+    async editUser(data) {
       const user_id = localStorage.getItem('user-id')
       // const token = localStorage.getItem('token')
-      this.$axios({
+      const res = await this.$axios({
         url: `/user_update/${user_id}`,
         method: 'post',
         data: data
-        // headers: {
-        //   Authorization: token
-        // }
-      }).then(res => {
-        let { statusCode, message } = res.data
-        if (statusCode == 200) {
-          this.$toast.success(message)
-          this.getInfo()
-        }
       })
+
+      let { statusCode, message } = res.data
+      if (statusCode == 200) {
+        this.$toast.success(message)
+        this.getInfo()
+      }
     },
     //显示昵称
     shownickname() {
@@ -160,33 +126,31 @@ export default {
     cancel() {
       this.isShow = false
       this.img = ''
+      this.$toast('取消操作')
     },
     // 确定修改
     crop() {
-      this.$refs.cropper.getCropBlob(data => {
-        console.log(data)
+      this.$refs.cropper.getCropBlob(async data => {
         let fd = new FormData()
         fd.append('file', data)
-        this.$axios({
+        const res = await this.$axios({
           url: `/upload`,
           method: 'post',
           data: fd
-        }).then(res => {
-          console.log(res)
-          let { statusCode, data } = res.data
-          if (statusCode == 200) {
-            this.isShow = false
-            this.img = ''
-            this.editUser({
-              head_img: data.url
-            })
-          }
         })
+        let { statusCode, data: data1 } = res.data
+        if (statusCode == 200) {
+          this.isShow = false
+          this.img = ''
+          this.editUser({
+            head_img: data1.url
+          })
+        }
       })
     },
     // 修改头像
     afterRead(file) {
-      console.log(file)
+      // console.log(file)
       this.isShow = true
       this.img = file.content
       // const fd = new FormData()

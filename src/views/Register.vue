@@ -30,7 +30,8 @@
 
     <my-btn @click="zhuce">注册</my-btn>
     <div class="go-login">
-      已有账号点击 <router-link to="/login">登陆</router-link>
+      已有账号点击
+      <router-link to="/login">登陆</router-link>
     </div>
   </div>
 </template>
@@ -45,14 +46,14 @@ export default {
     }
   },
   methods: {
-    zhuce() {
+    async zhuce() {
       let status1 = this.$refs.username.vailData(this.username)
       let status2 = this.$refs.nickname.vailData(this.nickname)
       let status3 = this.$refs.password.vailData(this.password)
       if (!status1 || !status2 || !status3) {
         return
       }
-      this.$axios({
+      const res = await this.$axios({
         url: '/register',
         method: 'POST',
         data: {
@@ -60,20 +61,19 @@ export default {
           password: this.password,
           nickname: this.nickname
         }
-      }).then(res => {
-        console.log(res.data)
-        if (res.data.statusCode == 200) {
-          this.$toast.success(res.data.message)
-          this.$router.push({
-            // path: '/login',
-            // query: { username: this.username, password: this.password },
-            name: 'login',
-            params: { username: this.username, password: this.password }
-          })
-        } else {
-          this.$toast.fail(res.data.message)
-        }
       })
+
+      if (res.data.statusCode == 200) {
+        this.$toast.success(res.data.message)
+        this.$router.push({
+          // path: '/login',
+          // query: { username: this.username, password: this.password },
+          name: 'login',
+          params: { username: this.username, password: this.password }
+        })
+      } else {
+        this.$toast.fail(res.data.message)
+      }
     }
   }
 }

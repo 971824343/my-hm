@@ -44,38 +44,40 @@ export default {
       console.log(value)
       this.password = value
     },
-    login() {
+    async login() {
       if (!this.$refs.username.vailData(this.username)) {
         return
       }
-
       if (!this.$refs.password.vailData(this.password)) {
         return
       }
+      // 判断是否从 是点击收藏 返回的
 
-      this.$axios({
+      const res = await this.$axios({
         url: '/login',
         method: 'post',
         data: {
           username: this.username,
           password: this.password
         }
-      }).then(res => {
-        console.log(res.data)
-        let { statusCode, data, message } = res.data
-        if (statusCode == 200) {
-          this.$toast.success(message)
-          localStorage.setItem('token', data.token)
-          localStorage.setItem('user-id', data.user.id)
-          this.$router.push('/user')
-        } else {
-          this.$toast.fail(message)
-        }
       })
+      let { statusCode, data, message } = res.data
+      if (statusCode == 200) {
+        this.$toast.success(message)
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('user-id', data.user.id)
+        if (this.$route.params.back) {
+          this.$router.go(-1)
+          return
+        }
+        this.$router.push('/user')
+      } else {
+        this.$toast.fail(message)
+      }
     }
   },
   created() {
-    // console.log(this.$route.params)
+    console.log(this.$route.params)
     this.username = this.$route.params.username
     this.password = this.$route.params.password
   }
